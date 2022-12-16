@@ -6,15 +6,18 @@ using UnityEngine;
 public class InputHandler : NetworkBehaviour
 {
     [SerializeField] private GameObject _inputControllableGameObject;
+    [SerializeField] private GameObject _lmbControllableGameObject;
     private IInputControllableAxis _inputControllableAxis;
-    // Start is called before the first frame update
+    private ILMBControllable _lmbControllable;
+    
     void Start()
     {
         _inputControllableAxis = _inputControllableGameObject.GetComponent<IInputControllableAxis>();
+        _lmbControllable = _lmbControllableGameObject.GetComponent<ILMBControllable>();
     }
 
-    // Update is called once per frame
-    void Update()
+    
+    void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
@@ -22,5 +25,6 @@ public class InputHandler : NetworkBehaviour
         }
         _inputControllableAxis.GetHorizontalAxis(Input.GetAxis("Horizontal"));
         _inputControllableAxis.GetVerticalAxis(Input.GetAxis("Vertical"));
+        _lmbControllable.SetLMBDown(Input.GetMouseButtonDown(0));
     }
 }
