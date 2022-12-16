@@ -5,49 +5,51 @@ using Mirror;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovement : NetworkBehaviour, IInputControllableAxis
 {
     [SerializeField] private float _speed = 5f;
-    [SerializeField] private float _dashDistance = 3f;
+    [SerializeField] private float _rotationSpeed = 720f;
     private CharacterController _characterController;
     private Transform _cameraTransform;
+    private float _horizontalInput;
+    private float _verticalInput;
     
-
-    // Start is called before the first frame update
     void Start()
     {
         _characterController = GetComponent<CharacterController>();
         GetComponent<NetworkTransform>().syncDirection = SyncDirection.ClientToServer;
     }
-
-    // Update is called once per frame
+    
     void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
             return;
         }
+        MoveCharacter();
+        ApplyGravity();
+    }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            _characterController.Move(transform.rotation * new Vector3(0f, 0f, _dashDistance));
-        }
+    private void ApplyGravity()
+    {
+        _characterController.Move(Physics.gravity * Time.deltaTime);
+    }
 
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput);
+    private void MoveCharacter()
+    {
+        Vector3 movementDirection = new Vector3(_horizontalInput, 0, _verticalInput);
         float inputMagnitude = Mathf.Clamp01(movementDirection.magnitude);
 
         float speed = inputMagnitude * _speed;
         movementDirection = Quaternion.AngleAxis(_cameraTransform.rotation.eulerAngles.y, Vector3.up) * movementDirection;
         movementDirection.Normalize();
-        
+
         _characterController.Move(movementDirection * (speed * Time.deltaTime));
 
         if (movementDirection != Vector3.zero)
         {
             Quaternion toRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, 720f * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
         }
     }
 
@@ -56,9 +58,14 @@ public class PlayerMovement : NetworkBehaviour
     {
         _cameraTransform = cameraTransform;
     }
-}
 
-public interface IInput
-{
-    
+    public void GetHorizontalAxis(float axis)
+    {
+        _horizontalInput = axis;
+    }
+
+    public void GetVerticalAxis(float axis)
+    {
+        _verticalInput = axis;
+    }
 }
