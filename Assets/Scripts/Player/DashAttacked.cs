@@ -5,12 +5,14 @@ using UnityEngine;
 
 namespace Player
 {
-    public class DashAttacked : NetworkBehaviour, IDashSubject
+    public class DashAttacked : NetworkBehaviour, IDashSubject, ICanBeInvincible
     {
         [SerializeField] private float _invincibilityDuration = 3f;
         private float _timeToRemoveInvincibility;
 
-        [SyncVar(hook = nameof(ChangeMeshColor))] private bool _isInvincible = false;
+        [SyncVar(hook = nameof(ChangeMeshColor))]
+        private bool _isInvincible = false;
+
         private MeshColorChanger _meshColorChanger;
 
 
@@ -33,7 +35,7 @@ namespace Player
                 }
             }
         }
-        
+
         [Command(requiresAuthority = false)]
         public void OnDashed()
         {
@@ -46,7 +48,6 @@ namespace Player
             print($"Dashed {gameObject.name}");
             SetInvisible();
         }
-        
 
 
         private void SetInvisible()
@@ -55,10 +56,15 @@ namespace Player
             _isInvincible = true;
             _timeToRemoveInvincibility = (float)(NetworkTime.time + _invincibilityDuration);
         }
-        
+
         private void ChangeMeshColor(bool oldInvincibility, bool newInvincibility)
         {
             _meshColorChanger.CmdChangeColor(newInvincibility);
+        }
+
+        public bool IsInvincible()
+        {
+            return _isInvincible;
         }
     }
 }
