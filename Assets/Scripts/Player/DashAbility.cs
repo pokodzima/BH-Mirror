@@ -52,13 +52,13 @@ namespace Player
 
                                 {
                                     dashSubject.OnDashed();
-                                    _playerScore.CmdAddScore();
+                                    _playerScore.RpcAddScore();
                                 }
                             }
                             else
                             {
                                 dashSubject.OnDashed();
-                                _playerScore.CmdAddScore();
+                                _playerScore.RpcAddScore();
                             }
                         }
                     }

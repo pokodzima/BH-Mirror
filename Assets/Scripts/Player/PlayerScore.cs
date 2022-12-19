@@ -1,4 +1,6 @@
+using System;
 using Mirror;
+using UI;
 using UnityEngine.SceneManagement;
 
 namespace Player
@@ -7,15 +9,36 @@ namespace Player
     {
         [SyncVar] private int _score = 0;
         private static readonly int ScoreToWin = 3;
-    
+        private ScoreText _scoreText;
+
+        public override void OnStartLocalPlayer()
+        {
+            print("OnStartLocalPlayer");
+            UploadScore();
+        }
+        
+        
+
+        
+        private void UploadScore()
+        {
+            if (_scoreText != null)
+            {
+                _scoreText.UploadScore(_score, $"Player {netId}");
+                print("UploadScore");
+            }
+            else
+            {
+                _scoreText = FindObjectOfType<ScoreText>();
+                UploadScore();
+            }
+        }
+
         [Command]
-        public void CmdAddScore()
+        public void RpcAddScore()
         {
             _score++;
-            if (_score == ScoreToWin)
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            }
+            UploadScore();
         }
     }
 }
