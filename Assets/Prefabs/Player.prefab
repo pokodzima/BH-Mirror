@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 4467528238419651993}
   - component: {fileID: 3746172995732142080}
   - component: {fileID: 4355212886227776510}
+  - component: {fileID: -9127142474467773032}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -351,3 +352,23 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
+  _maxHealth: 3
+  _invincibilityDuration: 3
+--- !u!114 &-9127142474467773032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8930768408751199485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 298457370c02e4921a78b996323e8437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0.1
+  _meshRenderers:
+  - {fileID: 8930768407873656339}
+  - {fileID: 6292995026965506173}

@@ -1,3 +1,5 @@
+using Mirror;
+
 namespace Interfaces
 {
     public interface IDashSubject
