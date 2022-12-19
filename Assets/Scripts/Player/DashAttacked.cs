@@ -7,12 +7,8 @@ namespace Player
 {
     public class DashAttacked : NetworkBehaviour, IDashSubject
     {
-        [SerializeField] private float _maxHealth = 3;
         [SerializeField] private float _invincibilityDuration = 3f;
         private float _timeToRemoveInvincibility;
-
-
-        [SyncVar] private float _currentHealth = 0;
 
         [SyncVar(hook = nameof(ChangeMeshColor))] private bool _isInvincible = false;
         private MeshColorChanger _meshColorChanger;
@@ -38,11 +34,6 @@ namespace Player
             }
         }
 
-        public override void OnStartLocalPlayer()
-        {
-            CmdResetHealth();
-        }
-
         [Command(requiresAuthority = false)]
         public void OnDashed()
         {
@@ -53,39 +44,21 @@ namespace Player
             }
 
             print($"Dashed {gameObject.name}");
-            SubtractHealth();
+            SetInvisible();
         }
+        
 
-        [Command]
-        public void CmdResetHealth()
+
+        private void SetInvisible()
         {
-            _currentHealth = _maxHealth;
-        }
-
-
-        private void SubtractHealth()
-        {
-            print("Subtracting health");
+            print("Set invisible");
             _isInvincible = true;
             _timeToRemoveInvincibility = (float)(NetworkTime.time + _invincibilityDuration);
-            _currentHealth--;
-            if (_currentHealth <= 0)
-            {
-                print($"Player {gameObject.name} died");
-                return;
-            }
         }
         
         private void ChangeMeshColor(bool oldInvincibility, bool newInvincibility)
         {
             _meshColorChanger.CmdChangeColor(newInvincibility);
-        }
-
-        
-        private void CmdResetInvincibility()
-        {
-            print("Resetting invincibility");
-            _isInvincible = false;
         }
     }
 }
