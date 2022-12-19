@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace Player
 {
-    public class DashSkill : NetworkBehaviour, ILMBControllable
+    public class DashAbility : NetworkBehaviour, ILMBControllable
     {
         [SerializeField] private float _dashDistance;
         [SerializeField] private float _sphereCastRadius = 1f;
         private CharacterController _characterController;
+        private IDashSubject _currentDashSubject;
 
         private bool _dashActive;
 
         void Start()
         {
             _characterController = GetComponent<CharacterController>();
-            syncDirection = SyncDirection.ClientToServer;
         }
 
 
@@ -29,7 +29,8 @@ namespace Player
             if (_dashActive)
             {
                 RaycastHit[] results = new RaycastHit[4];
-                if (Physics.SphereCastNonAlloc(transform.position + transform.forward, _sphereCastRadius, transform.forward, results,
+                if (Physics.SphereCastNonAlloc(transform.position + transform.forward, _sphereCastRadius,
+                        transform.forward, results,
                         _dashDistance - 1f,
                         ~LayerMask.NameToLayer("Player")) > 0)
                 {
@@ -47,6 +48,7 @@ namespace Player
                 _characterController.Move(transform.rotation * new Vector3(0f, 0f, _dashDistance));
             }
         }
+        
 
         public void SetLMBDown(bool down)
         {

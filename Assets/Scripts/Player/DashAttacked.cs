@@ -33,7 +33,7 @@ namespace Player
                 }
             }
         }
-
+        
         [Command(requiresAuthority = false)]
         public void OnDashed()
         {
